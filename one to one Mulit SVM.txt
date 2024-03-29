@@ -24,5 +24,3 @@ yhat
 
 
 
-#Reference
-#https://analyticsindiamag.com/one-vs-one-one-vs-rest-with-svm-for-multi-class-classification/
