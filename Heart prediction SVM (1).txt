@@ -1,0 +1,103 @@
+#Heart prediction machine learning model using SVM classification algorithms
+import sys
+import pandas as pd
+import numpy as np
+import sklearn
+import matplotlib
+
+import matplotlib.pyplot as plt
+from pandas.plotting import scatter_matrix
+#import seaborn as sns
+
+cleveland = pd.read_csv('/content/heart_statlog_cleveland_hungary_final.csv')
+
+# print the shape of the DataFrame, so we can see how many examples we have
+print( 'Shape of DataFrame: {}'.format(cleveland.shape))
+print (cleveland.loc[1])
+
+# print the last twenty or so data points
+cleveland.loc[280:]
+
+# remove missing data (indicated with a "?")
+data = cleveland[~cleveland.isin(['?'])]
+data.loc[280:]
+
+# drop rows with NaN values from DataFrame
+data = data.dropna(axis=0)
+data.loc[280:]
+
+# print the shape and data type of the dataframe
+print(data.shape)
+print(data.dtypes)
+
+# transform data to numeric to enable further analysis
+data = data.apply(pd.to_numeric)
+data.dtypes
+
+# print data characteristics, usings pandas built-in describe() function
+data.describe()
+
+# plot histograms for each variable
+data.hist(figsize = (12, 12))
+plt.show()
+
+pd.crosstab(data.age,data.target).plot(kind="bar",figsize=(20,6))
+plt.title('Heart Disease Frequency for Ages')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.show()
+
+import matplotlib.pyplot as plt
+from pandas.plotting import scatter_matrix
+import seaborn as sns
+plt.figure(figsize=(10,10))
+sns.heatmap(data.corr(),annot=True,fmt='.1f')
+plt.show()
+
+
+# create X and Y datasets for training
+X = np.array(data.drop(['target'], 1))
+y = np.array(data['target'])
+
+mean = X.mean(axis=0)
+X -= mean
+std = X.std(axis=0)
+X /= std
+
+
+# create X and Y datasets for training
+from sklearn import model_selection
+
+X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, stratify=y, random_state=42, test_size = 0.2)
+# convert the data to categorical labels
+
+
+from keras.utils.np_utils import to_categorical
+
+Y_train = to_categorical(y_train, num_classes=None)
+Y_test = to_categorical(y_test, num_classes=None)
+print (Y_train.shape)
+print (Y_train[:10])
+
+X
+
+# Generating SVM machine learning Model
+#Import svm model
+from sklearn import svm
+
+#Create a svm Classifier
+clv = svm.SVC(kernel='linear') # Linear Kernel
+
+#Train the model using the training sets
+clv.fit(X_train, y_train)
+
+
+#Predict the response for test dataset
+y_pred = clv.predict(X_test)
+
+
+#Import scikit-learn metrics module for accuracy calculation
+from sklearn import metrics
+
+# Model Accuracy: how often is the classifier correct?
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))

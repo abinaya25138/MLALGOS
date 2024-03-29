@@ -1,0 +1,23 @@
+from sklearn import datasets
+from sklearn.svm import SVC
+from sklearn.multiclass import OneVsRestClassifier
+
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+svc = SVC()
+o_vs_r = OneVsRestClassifier(svc)
+
+o_vs_r.fit(X, y)
+
+
+#Predicting values from the model
+yhat = o_vs_r.predict(X)
+yhat
+
+
+
+
+#Reference
+#https://analyticsindiamag.com/one-vs-one-one-vs-rest-with-svm-for-multi-class-classification/
